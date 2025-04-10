@@ -1,12 +1,22 @@
 app.alert("welcome to pdfboy")
 var Module = {};
 
-Module.print = function (e) {
-    app.alert(e)
+var lines = [];
+
+function log(msg) {
+	lines.push(msg);
+	if (lines.length > 25)
+		lines.shift();
+
+	for (var i = 0; i < lines.length; i++) {
+		var row = lines[i];
+		globalThis.getField("console_" + (25 - i - 1)).value = row;
+	}
+	// app.alert(msg);
 }
-Module.printErr = function (e) {
-    app.alert(e)
-}
+
+Module.print = log
+Module.printErr = log
 
 // --- ROM Loading
 var b64rom = "__replace_with_rom__";
@@ -52,4 +62,19 @@ function loadROMToFS() {
 	FS.close(stream);
 
 	Module.print("ROM decoded and placed in FS");
+}
+
+// ---- Video Output
+const palette = ["_", "//", "b", "#"]
+function sendFrame(framebuffer_ptr, framebuffer_len, width, height) {
+	let framebuffer = Module.HEAPU8.subarray(framebuffer_ptr, framebuffer_ptr + framebuffer_len);
+	for (let y = 0; y < height; y++) {
+		let row = []
+		for (let x = 0; x < width; x++) {
+			let index = (y * width + x);
+			row.push(palette[framebuffer[index]]);
+		}
+		let row_str = row.join("");
+		globalThis.getField("field_" + (height - y - 1)).value = row_str;
+	}
 }

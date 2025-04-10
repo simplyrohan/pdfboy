@@ -20,7 +20,7 @@ struct priv_t
     uint8_t *cart_ram;
 
     /* Frame buffer */
-    uint32_t fb[LCD_HEIGHT][LCD_WIDTH];
+    uint8_t fb[LCD_HEIGHT][LCD_WIDTH];
 };
 
 static struct gb_s gb;
@@ -111,16 +111,22 @@ void lcd_draw_line(struct gb_s *gb, const uint8_t pixels[160],
                    const uint_fast8_t line)
 {
     struct priv_t *priv = gb->direct.priv;
-    const uint32_t palette[] = {0xFFFFFF, 0xA5A5A5, 0x525252, 0x000000};
 
     for (unsigned int x = 0; x < LCD_WIDTH; x++)
-        priv->fb[line][x] = palette[pixels[x] & 3];
+        priv->fb[line][x] = pixels[x] & 3;
 }
 
 void loop()
 {
     /* Execute CPU cycles until the screen has to be redrawn. */
     gb_run_frame(&gb);
+    gb_run_frame(&gb);
+    gb_run_frame(&gb);
+
+
+    EM_ASM({
+        sendFrame($0, $1, $2, $3)
+    }, priv.fb, LCD_WIDTH * LCD_HEIGHT * 1, LCD_WIDTH, LCD_HEIGHT);
 
     printf("Frame done.\n");
 }
@@ -165,7 +171,7 @@ int main()
 
     // emscripten_set_main_loop(loop, 60, true);
     EM_ASM({
-        app.setInterval('_loop()', 1000 / 60);
+        app.setInterval('_loop()', 0);
     });
 
     free(priv.cart_ram);

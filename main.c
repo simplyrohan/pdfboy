@@ -119,36 +119,10 @@ void lcd_draw_line(struct gb_s *gb, const uint8_t pixels[160],
 
 void loop()
 {
-    const double target_speed_us = 1000000.0 / VERTICAL_SYNC;
-    int_fast16_t delay;
-    unsigned long start, end;
-    struct timeval timecheck;
-    int state;
-
-    gettimeofday(&timecheck, NULL);
-    start = (long)timecheck.tv_sec * 1000000 +
-            (long)timecheck.tv_usec;
-
     /* Execute CPU cycles until the screen has to be redrawn. */
     gb_run_frame(&gb);
 
-    gettimeofday(&timecheck, NULL);
-    end = (long)timecheck.tv_sec * 1000000 +
-          (long)timecheck.tv_usec;
-
-    delay = target_speed_us - (end - start);
-
     printf("Frame done.\n");
-
-    /* If it took more than the maximum allowed time to draw frame,
-     * do not delay.
-     * Interlaced mode could be enabled here to help speed up
-     * drawing.
-     */
-    if (delay < 0)
-        return;
-
-    usleep(delay);
 }
 
 int main()
@@ -156,6 +130,11 @@ int main()
     printf("Starting PDFBoy\n");
 
     enum gb_init_error_e ret;
+
+    /* Load the ROM from glue.js into VFS */
+    EM_ASM({
+        loadROMToFS();
+    });
 
     /* Copy input ROM file to allocated memory. */
     if ((priv.rom = read_rom_to_ram("rom.gb")) == NULL)
@@ -184,7 +163,10 @@ int main()
 
     printf("Starting...\n");
 
-    emscripten_set_main_loop(loop, 60, true);
+    // emscripten_set_main_loop(loop, 60, true);
+    EM_ASM({
+        app.setInterval('_loop()', 1000 / 60);
+    });
 
     free(priv.cart_ram);
     free(priv.rom);

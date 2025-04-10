@@ -1,12 +1,12 @@
 BUILD = build/
-
+ROM = rom.gb
 .PHONY: pdf,build, setup, clean
 
 pdf:
 	emcc main.c -o $(BUILD)emulator.js -sWASM=0 -sEXPORTED_FUNCTIONS=[_main,_loop]
 	cat glue.js build/emulator.js > build/build.js
 	@echo "Embedding ROM..."
-	./embed_file.py rom.gb build/build.js
+	./embed_file.py $(ROM) build/build.js
 	@echo "Generating PDF..."
 	python generate.py build/build.js build/pdfboy.pdf
 

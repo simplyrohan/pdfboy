@@ -1,4 +1,3 @@
-app.alert("welcome to pdfboy")
 var Module = {};
 
 var lines = [];
@@ -72,7 +71,7 @@ function sendFrame(framebuffer_ptr, framebuffer_len, width, height) {
 		let row = []
 		for (let x = 0; x < width; x++) {
 			let index = (y * width + x);
-			row.push(palette[framebuffer[index]]);
+			row[x] = (palette[framebuffer[index]]);
 		}
 		let row_str = row.join("");
 		globalThis.getField("field_" + (height - y - 1)).value = row_str;

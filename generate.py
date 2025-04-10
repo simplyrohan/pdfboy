@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
     width = 160
     height = 144
-    scale = 2
+    scale = 2.5
 
     writer = PdfWriter()
     page = create_page(width * scale - 8, height * scale + 220)
@@ -107,6 +107,7 @@ if __name__ == "__main__":
             f"field_{i}", 0, i * scale + 220, width * scale - 8, scale, ""
         )
         fields.append(field)
+
     for i in range(0, 25):
         field = create_field(f"console_{i}", 8, 8 + i * 8, 300, 8, "")
         fields.append(field)

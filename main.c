@@ -118,17 +118,20 @@ void lcd_draw_line(struct gb_s *gb, const uint8_t pixels[160],
 
 void loop()
 {
+    clock_t start = clock();
+
     /* Execute CPU cycles until the screen has to be redrawn. */
     gb_run_frame(&gb);
-    gb_run_frame(&gb);
-    gb_run_frame(&gb);
 
+    // printf("Emulator ran in %ld ms\n", (clock() - start) / 1000);
 
+    clock_t frame = clock();
     EM_ASM({
         sendFrame($0, $1, $2, $3)
     }, priv.fb, LCD_WIDTH * LCD_HEIGHT * 1, LCD_WIDTH, LCD_HEIGHT);
+    // printf("Frame draw ran in %ld ms\n", (clock() - frame) / 1000);
 
-    printf("Frame done.\n");
+    printf("Frame done in %ld ms.\n", (clock() - start) / 1000);
 }
 
 int main()

@@ -109,9 +109,22 @@ if __name__ == "__main__":
         fields.append(field)
 
     for i in range(0, 25):
-        field = create_field(f"console_{i}", 8, 8 + i * 8, 300, 8, "")
+        field = create_field(f"console_{i}", 8, 8 + i * 8, 100, 8, "")
         fields.append(field)
 
+    fields += create_key_buttons(
+        [
+            {"name": "^", "key": "up", "x": 170, "y": 130, "width": 30, "height": 30},
+            {"name": "v", "key": "down", "x": 170, "y": 70, "width": 30, "height": 30},
+            {"name": "<", "key": "left", "x": 140, "y": 100, "width": 30, "height": 30},
+            {"name": ">", "key": "left", "x": 200, "y": 100, "width": 30, "height": 30},
+            {"name": "A", "key": "a", "x": 310, "y": 115, "width": 30, "height": 30},
+            {"name": "B", "key": "b", "x": 280, "y": 85, "width": 30, "height": 30},
+            {"name": "Start", "key": "start", "x": 200, "y": 10, "width": 50, "height": 30},
+            {"name": "Select", "key": "select", "x": 255, "y": 10, "width": 50, "height": 30},
+
+        ]
+    )
     page.Annots = PdfArray(fields)
     writer.addpage(page)
     writer.write(sys.argv[2])

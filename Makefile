@@ -3,9 +3,9 @@ ROM = rom.gb
 .PHONY: pdf,build, setup, clean
 
 pdf:
-	emcc main.c -o $(BUILD)emulator.js -sWASM=0 -sEXPORTED_FUNCTIONS=[_main,_loop]
+	emcc main.c -o $(BUILD)emulator.js -sWASM=0 -sEXPORTED_FUNCTIONS=[_main,_loop,_key_down,_key_up] -sEXTRA_EXPORTED_RUNTIME_METHODS=[ccall]
 	cat glue.js build/emulator.js > build/build.js
-	@echo "Embedding ROM..."
+	@echo "Embedding $(ROM)..."
 	./embed_file.py $(ROM) build/build.js
 	@echo "Generating PDF..."
 	python generate.py build/build.js build/pdfboy.pdf

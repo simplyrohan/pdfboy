@@ -116,6 +116,74 @@ void lcd_draw_line(struct gb_s *gb, const uint8_t pixels[160],
         priv->fb[line][x] = pixels[x] & 3;
 }
 
+void key_down(char *key)
+{
+    if (strcmp(key, "up") == 0)
+        gb.direct.joypad &= ~JOYPAD_UP;
+    else if (strcmp(key, "down") == 0)
+    {
+        gb.direct.joypad &= ~JOYPAD_DOWN;
+    }
+    else if (strcmp(key, "left") == 0)
+    {
+        gb.direct.joypad &= ~JOYPAD_LEFT;
+    }
+    else if (strcmp(key, "right") == 0)
+    {
+        gb.direct.joypad &= ~JOYPAD_RIGHT;
+    }
+    else if (strcmp(key, "a") == 0)
+    {
+        gb.direct.joypad &= ~JOYPAD_A;
+    }
+    else if (strcmp(key, "b") == 0)
+    {
+        gb.direct.joypad &= ~JOYPAD_B;
+    }
+    else if (strcmp(key, "start") == 0)
+    {
+        gb.direct.joypad &= ~JOYPAD_START;
+    }
+    else if (strcmp(key, "select") == 0)
+    {
+        gb.direct.joypad &= ~JOYPAD_SELECT;
+    }
+}
+
+void key_up(char *key)
+{
+    if (strcmp(key, "up") == 0)
+        gb.direct.joypad |= JOYPAD_UP;
+    else if (strcmp(key, "down") == 0)
+    {
+        gb.direct.joypad |= JOYPAD_DOWN;
+    }
+    else if (strcmp(key, "left") == 0)
+    {
+        gb.direct.joypad |= JOYPAD_LEFT;
+    }
+    else if (strcmp(key, "right") == 0)
+    {
+        gb.direct.joypad |= JOYPAD_RIGHT;
+    }
+    else if (strcmp(key, "a") == 0)
+    {
+        gb.direct.joypad |= JOYPAD_A;
+    }
+    else if (strcmp(key, "b") == 0)
+    {
+        gb.direct.joypad |= JOYPAD_B;
+    }
+    else if (strcmp(key, "start") == 0)
+    {
+        gb.direct.joypad |= JOYPAD_START;
+    }
+    else if (strcmp(key, "select") == 0)
+    {
+        gb.direct.joypad |= JOYPAD_SELECT;
+    }
+}
+
 void loop()
 {
     clock_t start = clock();
@@ -126,9 +194,7 @@ void loop()
     // printf("Emulator ran in %ld ms\n", (clock() - start) / 1000);
 
     clock_t frame = clock();
-    EM_ASM({
-        sendFrame($0, $1, $2, $3)
-    }, priv.fb, LCD_WIDTH * LCD_HEIGHT * 1, LCD_WIDTH, LCD_HEIGHT);
+    EM_ASM({sendFrame($0, $1, $2, $3)}, priv.fb, LCD_WIDTH * LCD_HEIGHT * 1, LCD_WIDTH, LCD_HEIGHT);
     // printf("Frame draw ran in %ld ms\n", (clock() - frame) / 1000);
 
     printf("Frame done in %ld ms.\n", (clock() - start) / 1000);

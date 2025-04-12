@@ -77,3 +77,16 @@ function sendFrame(framebuffer_ptr, framebuffer_len, width, height) {
 		globalThis.getField("field_" + (height - y - 1)).value = row_str;
 	}
 }
+
+// ---- Keys
+function key_pressed(key_str) {
+	log(key_str);
+}
+
+function key_down(key_str) {
+	Module.ccall('key_down', null, ["string"], [key_str]);
+}
+
+function key_up(key_str) {
+	Module.ccall('key_up', null, ["string"], [key_str]);
+}

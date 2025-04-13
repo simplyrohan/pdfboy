@@ -147,7 +147,16 @@ input[type="file"] {
   padding: 0;
 }
 
-input[type="file"]::file-selector-button {
+input[type="file"]::-webkit-file-upload-button {
+  display: none;
+}
+
+
+input[type="file"]::before {
+  content: 'Choose ROM (.gb)';
+
+  display: inline-block;
+
   border-radius: 0.5rem;
   padding: 0.5rem;
 
@@ -158,6 +167,8 @@ input[type="file"]::file-selector-button {
   font-weight: 600;
 
   cursor: pointer;
+  
+  margin-right: 0.5rem;
 }
 
 #open-btn {

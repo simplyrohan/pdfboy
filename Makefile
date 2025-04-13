@@ -26,6 +26,8 @@ setup:
 	./emsdk/emsdk install 1.39.20-fastcomp
 	./emsdk/emsdk activate 1.39.20-fastcomp
 
+	pip install pdfrw
+
 	mkdir $(BUILD)
 
 	@echo "Setup Finished"

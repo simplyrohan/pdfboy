@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+:root {
+
+  --text-50: #f2f2f2;
+  --text-100: #e6e6e6;
+  --text-200: #cccccc;
+  --text-300: #b3b3b3;
+  --text-400: #999999;
+  --text-500: #808080;
+  --text-600: #666666;
+  --text-700: #4d4d4d;
+  --text-800: #333333;
+  --text-900: #1a1a1a;
+  --text-950: #0d0d0d;
+
+  --background-50: #f1f2f3;
+  --background-100: #e4e6e7;
+  --background-200: #c9cccf;
+  --background-300: #aeb3b7;
+  --background-400: #93999f;
+  --background-500: #788087;
+  --background-600: #60666c;
+  --background-700: #484d51;
+  --background-800: #303336;
+  --background-900: #181a1b;
+  --background-950: #0c0d0e;
+
+  --primary-50: #e5f2ff;
+  --primary-100: #cce5ff;
+  --primary-200: #99caff;
+  --primary-300: #66b0ff;
+  --primary-400: #3396ff;
+  --primary-500: #007bff;
+  --primary-600: #0063cc;
+  --primary-700: #004a99;
+  --primary-800: #003166;
+  --primary-900: #001933;
+  --primary-950: #000c1a;
+
+  --secondary-50: #f0f2f5;
+  --secondary-100: #e1e6ea;
+  --secondary-200: #c3ccd5;
+  --secondary-300: #a5b3c0;
+  --secondary-400: #8799ab;
+  --secondary-500: #697f96;
+  --secondary-600: #546678;
+  --secondary-700: #3f4c5a;
+  --secondary-800: #2a333c;
+  --secondary-900: #15191e;
+  --secondary-950: #0a0d0f;
+
+  --accent-50: #eee5ff;
+  --accent-100: #ddccff;
+  --accent-200: #bb99ff;
+  --accent-300: #9966ff;
+  --accent-400: #7733ff;
+  --accent-500: #5500ff;
+  --accent-600: #4400cc;
+  --accent-700: #330099;
+  --accent-800: #220066;
+  --accent-900: #110033;
+  --accent-950: #09001a;
+}
+
+body {
+  background-color: var(--background-950);
+  color: var(--text-50);
+
+  font-family: 'Plus Jakarta Sans', sans-serif;
+
+  margin: 0;
+
+  overflow-x: hidden;
+
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+input {
+  background-color: var(--background-950);
+  border: none;
+  border-bottom: 1px var(--background-500) solid;
+  outline: none;
+  color: var(--text-100);
+  font: inherit;
+  padding: 0.25rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: 3rem;
+  letter-spacing: -0.1rem;
+  margin: 0;
+}
+
+h2 {
+  font-size: 2rem;
+  letter-spacing: -0.1rem;
+  margin: 0;
+}
+
+a {
+  color: var(--text-100);
+  text-decoration-color: var(--accent-300);
+  font-weight: 600;
+}
+
+.caption {
+  font-size: 1.5rem;
+}
+
+.fancy {
+  color: transparent;
+  background-clip: text;
+  background-image: linear-gradient(90deg, var(--primary-300), var(--accent-300));
+  font-weight: 500;
+}
+
+.main {
+  background-image: linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(45deg, var(--primary-600) 50%, var(--accent-200));
+  padding: 1rem;
+  border-radius: 1rem;
+
+  border: 0.5px solid var(--background-700);
+
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+
+  min-width: 55vw;
+}
+
+input[type="file"] {
+  background-color: transparent;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+input[type="file"]::file-selector-button {
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+
+  border: 2px solid var(--accent-300);
+  background-color: transparent;
+
+  color: var(--accent-300);
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+#open-btn {
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+
+  border: 2px solid var(--accent-300);
+  background-color: transparent;
+
+  color: var(--accent-300);
+  font-weight: 600;
+
+  cursor: pointer;
+
+}
+
+
+#open-btn:disabled {
+  border-color: var(--background-400);
+  color: var(--background-400);
+
+  cursor: not-allowed;
+}

@@ -117,7 +117,7 @@ if __name__ == "__main__":
             {"name": "^", "key": "up", "x": 170, "y": 130, "width": 30, "height": 30},
             {"name": "v", "key": "down", "x": 170, "y": 70, "width": 30, "height": 30},
             {"name": "<", "key": "left", "x": 140, "y": 100, "width": 30, "height": 30},
-            {"name": ">", "key": "left", "x": 200, "y": 100, "width": 30, "height": 30},
+            {"name": ">", "key": "right", "x": 200, "y": 100, "width": 30, "height": 30},
             {"name": "A", "key": "a", "x": 310, "y": 115, "width": 30, "height": 30},
             {"name": "B", "key": "b", "x": 280, "y": 85, "width": 30, "height": 30},
             {"name": "Start", "key": "start", "x": 200, "y": 10, "width": 50, "height": 30},

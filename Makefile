@@ -1,17 +1,22 @@
 BUILD = build/
 ROM = rom.gb
-.PHONY: pdf,build, setup, clean
+.PHONY: pdf, build-gb, setup, clean
 
-pdf:
-	emcc main.c -o $(BUILD)emulator.js -sWASM=0 -sEXPORTED_FUNCTIONS=[_main,_loop,_key_down,_key_up] -sEXTRA_EXPORTED_RUNTIME_METHODS=[ccall]
+pdf: build-gb
 	cat glue.js build/emulator.js > build/build.js
 	@echo "Embedding $(ROM)..."
 	./embed_file.py $(ROM) build/build.js
 	@echo "Generating PDF..."
 	python generate.py build/build.js build/pdfboy.pdf
 
-build:
-	emcc main.c -o $(BUILD)index.html -sWASM=0 -sSINGLE_FILE=1 --preload-file rom.gb
+site: build-gb
+	cat glue.js build/emulator.js > build/norom.js
+	@echo "Generating PDF..."
+	python generate.py build/norom.js build/norom.pdf
+	cp site/* build/
+
+build-gb:
+	emcc main.c -o $(BUILD)emulator.js -sWASM=0 -sEXPORTED_FUNCTIONS=[_main,_loop,_key_down,_key_up] -sEXTRA_EXPORTED_RUNTIME_METHODS=[ccall]
 
 setup:
 	@echo "Installing tools and setting up project"

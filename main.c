@@ -191,11 +191,8 @@ void loop()
     /* Execute CPU cycles until the screen has to be redrawn. */
     gb_run_frame(&gb);
 
-    // printf("Emulator ran in %ld ms\n", (clock() - start) / 1000);
-
     clock_t frame = clock();
     EM_ASM({sendFrame($0, $1, $2, $3)}, priv.fb, LCD_WIDTH * LCD_HEIGHT * 1, LCD_WIDTH, LCD_HEIGHT);
-    // printf("Frame draw ran in %ld ms\n", (clock() - frame) / 1000);
 
     printf("Frame done in %ld ms.\n", (clock() - start) / 1000);
 }
@@ -238,7 +235,6 @@ int main()
 
     printf("Starting...\n");
 
-    // emscripten_set_main_loop(loop, 60, true);
     EM_ASM({
         app.setInterval('_loop()', 0);
     });

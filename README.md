@@ -45,10 +45,15 @@ Finally, he used a Javascript "glue" to connect the I/O functions to the PDF API
 
 ## Project Structure
 `main.c` - Main code to setup and run the GameBoy emulator
+
 `peanut_gb.h` - [The core emulator](https://github.com/deltabeard/Peanut-GB/tree/master)
+
 `glue.js` - Binds core functions like logging and other I/O between Emscripten and the PDF API
+
 `generate.py` - PDF File generator (based off DoomPDF's version)
+
 `embed_file.py` - Basic CLI for embedding binary files into other files using Base64 (needed for storing ROMs)
+
 `site/` - Files for [landing website](https://pdfboy.thatdev.xyz)
 
 ## Credits

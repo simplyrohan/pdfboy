@@ -9,9 +9,8 @@ function log(msg) {
 
 	for (var i = 0; i < lines.length; i++) {
 		var row = lines[i];
-		globalThis.getField("console_" + (25 - i - 1)).value = row;
+		// globalThis.getField("console_" + (25 - i - 1)).value = row;
 	}
-	// app.alert(msg);
 }
 
 Module.print = log

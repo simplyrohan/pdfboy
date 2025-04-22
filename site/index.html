@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <script src="generate.js" defer></script>
 </head>
+
 <body>
     <div class="main">
         <span>
@@ -16,11 +18,24 @@
 
         <span><b>A GameBoy Emulator running in a PDF file!</b></span>
 
-        <span>Source Code: <a href="https://github.com/simplyrohan/pdfboy">https://github.com/simplyrohan/pdfboy</a></span>
+        <span>Source Code: <a
+                href="https://github.com/simplyrohan/pdfboy">https://github.com/simplyrohan/pdfboy</a></span>
 
+        <sub><a href="https://donaldhays.com/projects/snake/">Snake ROM by Donald Hays</a></sub>
+
+
+        <a href="pdfboy.pdf"><button class="launch-btn">Start PDFBoy</button></a>
+
+        <hr>
+
+        <b>Custom ROM:</b>
         <input type="file" id="rom-file" accept=".gb">
 
-        <button id="open-btn" disabled>Open</button>
+        <button class="launch-btn" id="open-btn" disabled>Open</button>
+
+        <sub>Note: PDFBoy will only work in Chrome based browsers</sub>
+
     </div>
 </body>
+
 </html>

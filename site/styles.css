@@ -109,6 +109,7 @@ h2 {
 
 a {
   color: var(--text-100);
+  text-decoration: underline;
   text-decoration-color: var(--accent-300);
   font-weight: 600;
 }
@@ -167,11 +168,14 @@ input[type="file"]::before {
   font-weight: 600;
 
   cursor: pointer;
-  
+
   margin-right: 0.5rem;
 }
 
-#open-btn {
+
+.launch-btn {
+  display: block;
+
   border-radius: 0.5rem;
   padding: 0.5rem;
 
@@ -179,16 +183,24 @@ input[type="file"]::before {
   background-color: transparent;
 
   color: var(--accent-300);
+  font-family: inherit;
   font-weight: 600;
+  text-decoration: none;
+
+  width: 100%;
 
   cursor: pointer;
-
 }
 
 
-#open-btn:disabled {
+.launch-btn:disabled {
   border-color: var(--background-400);
   color: var(--background-400);
 
   cursor: not-allowed;
+}
+
+hr {
+  width: 98%;
+  border-color: grey;
 }

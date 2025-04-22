@@ -7,7 +7,6 @@ from pdfrw.objects.pdfname import PdfName
 from pdfrw.objects.pdfstring import PdfString
 from pdfrw.objects.pdfdict import PdfDict
 from pdfrw.objects.pdfarray import PdfArray
-from pdfrw.objects.pdfobject import PdfObject
 
 
 def create_script(js):
@@ -75,10 +74,10 @@ def create_field(
     return annotation
 
 
-def create_text(x, y, size, txt, color=[0, 0, 0]):
+def create_text(x, y, size, txt, color=[0, 0, 0], bold=False):
     return f"""
   BT
-  /F1 {size} Tf {color[0]} {color[1]} {color[2]} rg
+  /Helvetica {size} Tf {color[0]} {color[1]} {color[2]} rg
   {x} {y} Td ({txt}) Tj
   ET
   """
@@ -217,9 +216,30 @@ if __name__ == "__main__":
 
     fields = []
 
-    fields.append(create_field("fps", 0, PDF_HEIGHT - 8, 38, 8, "", 8))
-    fields.append(create_field("speed", 0, PDF_HEIGHT - 8 - 8, 48, 8, "", 8))
-
+    fields.append(
+        create_field(
+            "fps",
+            6,
+            PDF_HEIGHT - 8 - 6,
+            38,
+            8,
+            "",
+            8,
+            (190 / 255, 185 / 255, 180 / 255),
+        )
+    )
+    fields.append(
+        create_field(
+            "speed",
+            PDF_WIDTH - 42 - 6,
+            PDF_HEIGHT - 8 - 6,
+            42,
+            8,
+            "",
+            8,
+            (190 / 255, 185 / 255, 180 / 255),
+        )
+    )
 
     for i in range(0, 144):
         field = create_field(
@@ -369,7 +389,7 @@ if __name__ == "__main__":
                 "name": "Start",
                 "key": "start",
                 "x": (GAMEBOY_WIDTH / 2) - 50 - 5,
-                "y": 42,
+                "y": 62,
                 "width": 50,
                 "height": BUTTON_SIZE / 2,
                 "font-size": FONT_SIZE,
@@ -384,7 +404,7 @@ if __name__ == "__main__":
                 "name": "Select",
                 "key": "select",
                 "x": (GAMEBOY_WIDTH / 2) + 5,
-                "y": 42,
+                "y": 62,
                 "width": 50,
                 "height": BUTTON_SIZE / 2,
                 "font-size": FONT_SIZE,
@@ -401,26 +421,31 @@ if __name__ == "__main__":
     page.Contents.stream += "\n".join(
         [
             create_text(
-                SCREEN_X - (BORDER_SIZE * 2), SCREEN_Y - BORDER_SIZE - 24, 24, "PDFBoy"
-            ),
-            create_text(
                 SCREEN_X - (BORDER_SIZE * 2),
-                SCREEN_Y - BORDER_SIZE - 28 - 12,
-                8,
-                "This PDF only works in Chromium based browsers",
+                SCREEN_Y - BORDER_SIZE - 32,
+                24,
+                "PDFBoy",
+                (0, 0, 0.8),
+                bold=True
             ),
             # Bottom text
             create_text(
-                2,
-                2,
+                6,
+                6,
                 8,
                 "Upload ROM (.gb) file at: https://gameboy.doompdf.dev/",
             ),
             create_text(
-                2,
-                12,
+                6,
+                16,
                 8,
                 "Source Code: https://github.com/simplyrohan/pdfboy",
+            ),
+            create_text(
+                6,
+                26,
+                8,
+                "This PDF only works in Chromium based browsers",
             ),
         ]
     )

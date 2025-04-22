@@ -194,7 +194,7 @@ void loop()
     clock_t frame = clock();
     EM_ASM({sendFrame($0, $1, $2, $3)}, priv.fb, LCD_WIDTH * LCD_HEIGHT * 1, LCD_WIDTH, LCD_HEIGHT);
 
-    printf("Frame done in %ld ms.\n", (clock() - start) / 1000);
+    printf("ms: %li\n", (clock() - start) / 1000);
 }
 
 int main()

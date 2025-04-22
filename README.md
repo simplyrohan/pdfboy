@@ -2,7 +2,7 @@
 
 A Gameboy emulator running in a PDF file (based on [DoomPDF](https://github.com/ading2210/doompdf) by ading2210)
 
-Try it out at https://pdfboy.thatdev.xyz/ (Only works in Chrome-based browsers)
+Try it out at https://gameboy.doompdf.dev/ (Only works in Chrome-based browsers)
 
 ## Building
 
@@ -83,4 +83,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
-

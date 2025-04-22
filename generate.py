@@ -75,24 +75,38 @@ def create_field(
     return annotation
 
 
-def create_text(x, y, size, txt):
+def create_text(x, y, size, txt, color=[0, 0, 0]):
     return f"""
   BT
-  /Helvetica {size} Tf
+  /F1 {size} Tf {color[0]} {color[1]} {color[2]} rg
   {x} {y} Td ({txt}) Tj
   ET
   """
 
 
-def create_button(name, x, y, width, height, value, font_size, bg, fg):
+def create_button(name, x, y, width, height, value, font_size, bg, fg, tl, tr, bl, br):
+    shave = 1 * ((tl + tr + bl + br) / 4)
     button = create_field(
-        name, x, y, width, height, f_type=PdfName.Btn, font_size=font_size, fg=fg
+        name,
+        x + (shave / 2),
+        y + (shave / 2),
+        width - shave,
+        height - shave,
+        f_type=PdfName.Btn,
+        font_size=font_size,
+        fg=fg,
     )
     button.AA = PdfDict()
     button.Ff = 65536
     button.MK = PdfDict()
     button.MK.BG = PdfArray(bg)
     button.MK.CA = value
+    button.MK.AC = PdfString("hi")
+
+    page.Contents.stream += (
+        "\n" + rounded_rect(x, y, width, height, bg, tl, tr, br, bl) + "\n"
+    )
+
     return button
 
 
@@ -111,6 +125,10 @@ def create_key_buttons(keys_info):
             info["font-size"],
             info["bg"],
             info["fg"],
+            info["tl"],
+            info["tr"],
+            info["bl"],
+            info["br"],
         )
         button.AA = PdfDict()
         button.AA.D = create_script(f"key_down('{key}')")
@@ -119,8 +137,55 @@ def create_key_buttons(keys_info):
     return buttons
 
 
+def rounded_rect(x, y, w, h, color, rtl, rtr, rbr, rbl):
+    K = 0.552284749831
+    rtl = min(rtl, w / 2, h / 2)
+    rtr = min(rtr, w / 2, h / 2)
+    rbr = min(rbr, w / 2, h / 2)
+    rbl = min(rbl, w / 2, h / 2)
+
+    path = [f"{color[0]:.2f} {color[1]:.2f} {color[2]:.2f} rg"]
+
+    path.append(f"{x + rbl} {y} m")
+
+    path.append(f"{x + w - rbr} {y} l")
+    if rbr:
+        x0, y0 = x + w - rbr, y
+        path.append(
+            f"{x0 + rbr*K} {y0} {x0 + rbr} {y0 + rbr*K} {x0 + rbr} {y0 + rbr} c"
+        )
+
+    path.append(f"{x + w} {y + h - rtr} l")
+    if rtr:
+        x0, y0 = x + w, y + h - rtr
+        path.append(
+            f"{x0} {y0 + rtr*K} {x0 - rtr*K} {y0 + rtr} {x0 - rtr} {y0 + rtr} c"
+        )
+
+    path.append(f"{x + rtl} {y + h} l")
+    if rtl:
+        x0, y0 = x + rtl, y + h
+        path.append(
+            f"{x0 - rtl*K} {y0} {x0 - rtl} {y0 - rtl*K} {x0 - rtl} {y0 - rtl} c"
+        )
+
+    path.append(f"{x} {y + rbl} l")
+    if rbl:
+        x0, y0 = x, y + rbl
+        path.append(
+            f"{x0} {y0 - rbl*K} {x0 + rbl*K} {y0 - rbl} {x0 + rbl} {y0 - rbl} c"
+        )
+
+    path.append("f")
+
+    return "\n".join(path)
+
+
 GAMEBOY_WIDTH = 160 * 2
 GAMEBOY_HEIGHT = 263 * 2
+
+PDF_WIDTH = GAMEBOY_WIDTH
+PDF_HEIGHT = GAMEBOY_HEIGHT
 
 DISPLAY_HEIGHT = 144 * 2
 
@@ -131,10 +196,10 @@ SCREEN_HEIGHT = SCREEN_WIDTH / 160 * 144
 
 
 SCREEN_X = (GAMEBOY_WIDTH - SCREEN_WIDTH) / 2
-SCREEN_Y = GAMEBOY_HEIGHT - (SCREEN_X + SCREEN_HEIGHT)  # Not real, but good enough
+SCREEN_Y = PDF_HEIGHT - SCREEN_HEIGHT - 48  # Not real, but good enough
 
-PDF_WIDTH = GAMEBOY_WIDTH
-PDF_HEIGHT = GAMEBOY_HEIGHT
+BORDER_SIZE = 24
+
 
 # Buttons
 BUTTON_SIZE = 40
@@ -152,6 +217,10 @@ if __name__ == "__main__":
 
     fields = []
 
+    fields.append(create_field("fps", 0, PDF_HEIGHT - 8, 38, 8, "", 8))
+    fields.append(create_field("speed", 0, PDF_HEIGHT - 8 - 8, 48, 8, "", 8))
+
+
     for i in range(0, 144):
         field = create_field(
             f"field_{i}",
@@ -167,24 +236,19 @@ if __name__ == "__main__":
         fields.append(field)
 
     # Bounding rect
-    w, h = GAMEBOY_WIDTH - 48, SCREEN_HEIGHT + 48  # width and height
-    x, y = 24, SCREEN_Y - 24  # bottom-left corner
+    w, h = GAMEBOY_WIDTH - (BORDER_SIZE * 2), SCREEN_HEIGHT + (
+        BORDER_SIZE * 2
+    )  # width and height
+    x, y = SCREEN_X - (BORDER_SIZE * 2), SCREEN_Y - BORDER_SIZE  # bottom-left corner
     r, g, b = 80 / 255, 85 / 255, 100 / 255  # red fill color
 
-    # PDF drawing commands
-    rect = f"""
-    {r} {g} {b} rg            % Set fill color (RGB)
-    {x} {y} {w} {h} re        % Define rectangle
-    f                         % Fill the rectangle
-    """
-
-    page.Contents.stream += rect
+    page.Contents.stream += rounded_rect(x, y, w, h, [r, g, b], 10, 10, 40, 10)
 
     fields += create_key_buttons(
         [
             # Arrows
             {
-                "name": "^",
+                "name": "",
                 "key": "up",
                 "x": (GAMEBOY_WIDTH / 2) - (GAP / 2) - (BUTTON_SIZE * 2),
                 "y": GAMEBOY_HEIGHT
@@ -198,9 +262,13 @@ if __name__ == "__main__":
                 "font-size": FONT_SIZE,
                 "bg": (10 / 255, 10 / 255, 20 / 255),
                 "fg": (1, 1, 1),
+                "tl": 5,
+                "tr": 5,
+                "bl": 0,
+                "br": 0,
             },
             {
-                "name": "v",
+                "name": "",
                 "key": "down",
                 "x": (GAMEBOY_WIDTH / 2) - (GAP / 2) - (BUTTON_SIZE * 2),
                 "y": GAMEBOY_HEIGHT
@@ -214,9 +282,13 @@ if __name__ == "__main__":
                 "font-size": FONT_SIZE,
                 "bg": (10 / 255, 10 / 255, 20 / 255),
                 "fg": (1, 1, 1),
+                "tl": 0,
+                "tr": 0,
+                "bl": 5,
+                "br": 5,
             },
             {
-                "name": "<",
+                "name": "",
                 "key": "left",
                 "x": (GAMEBOY_WIDTH / 2) - (GAP / 2) - (BUTTON_SIZE * 3),
                 "y": GAMEBOY_HEIGHT
@@ -230,9 +302,13 @@ if __name__ == "__main__":
                 "font-size": FONT_SIZE,
                 "bg": (10 / 255, 10 / 255, 20 / 255),
                 "fg": (1, 1, 1),
+                "tl": 5,
+                "tr": 0,
+                "bl": 5,
+                "br": 0,
             },
             {
-                "name": ">",
+                "name": "",
                 "key": "right",
                 "x": (GAMEBOY_WIDTH / 2) - (GAP / 2) - (BUTTON_SIZE),
                 "y": GAMEBOY_HEIGHT
@@ -246,12 +322,16 @@ if __name__ == "__main__":
                 "font-size": FONT_SIZE,
                 "bg": (10 / 255, 10 / 255, 20 / 255),
                 "fg": (1, 1, 1),
+                "tl": 0,
+                "tr": 5,
+                "bl": 0,
+                "br": 5,
             },
             # A/B
             {
                 "name": "A",
                 "key": "a",
-                "x": (GAMEBOY_WIDTH / 2) + (GAP / 2) + (BUTTON_SIZE) + 2.5,
+                "x": (GAMEBOY_WIDTH / 2) + (GAP / 2) + (BUTTON_SIZE * 2),
                 "y": GAMEBOY_HEIGHT
                 - (
                     DISPLAY_HEIGHT
@@ -263,11 +343,15 @@ if __name__ == "__main__":
                 "font-size": FONT_SIZE,
                 "bg": (180 / 255, 50 / 255, 95 / 255),
                 "fg": (0, 0, 0),
+                "tl": BUTTON_SIZE / 2,
+                "tr": BUTTON_SIZE / 2,
+                "bl": BUTTON_SIZE / 2,
+                "br": BUTTON_SIZE / 2,
             },
             {
                 "name": "B",
                 "key": "b",
-                "x": (GAMEBOY_WIDTH / 2) + (GAP / 2) - 2.5,
+                "x": (GAMEBOY_WIDTH / 2) + (GAP / 2) + (BUTTON_SIZE),
                 "y": GAMEBOY_HEIGHT
                 - (DISPLAY_HEIGHT + (GAMEBOY_HEIGHT - DISPLAY_HEIGHT) / 2),
                 "width": BUTTON_SIZE,
@@ -275,37 +359,71 @@ if __name__ == "__main__":
                 "font-size": FONT_SIZE,
                 "bg": (180 / 255, 50 / 255, 95 / 255),
                 "fg": (0, 0, 0),
+                "tl": BUTTON_SIZE / 2,
+                "tr": BUTTON_SIZE / 2,
+                "bl": BUTTON_SIZE / 2,
+                "br": BUTTON_SIZE / 2,
             },
             # Start/Select
             {
                 "name": "Start",
                 "key": "start",
                 "x": (GAMEBOY_WIDTH / 2) - 50 - 5,
-                "y": 24,
+                "y": 42,
                 "width": 50,
-                "height": BUTTON_SIZE,
+                "height": BUTTON_SIZE / 2,
                 "font-size": FONT_SIZE,
                 "bg": (140 / 255, 140 / 255, 140 / 255),
                 "fg": (0, 0, 0),
+                "tl": 5,
+                "tr": 5,
+                "bl": 5,
+                "br": 5,
             },
             {
                 "name": "Select",
                 "key": "select",
                 "x": (GAMEBOY_WIDTH / 2) + 5,
-                "y": 24,
+                "y": 42,
                 "width": 50,
-                "height": BUTTON_SIZE,
+                "height": BUTTON_SIZE / 2,
                 "font-size": FONT_SIZE,
                 "bg": (140 / 255, 140 / 255, 140 / 255),
                 "fg": (0, 0, 0),
+                "tl": 5,
+                "tr": 5,
+                "bl": 5,
+                "br": 5,
             },
         ]
     )
 
-    # Meta
-    # for i in range(0, 25):
-    #     field = create_field(f"console_{i}", GAMEBOY_WIDTH + 12, 8 + i * 8, 100, 8, "")
-    #     fields.append(field)
+    page.Contents.stream += "\n".join(
+        [
+            create_text(
+                SCREEN_X - (BORDER_SIZE * 2), SCREEN_Y - BORDER_SIZE - 24, 24, "PDFBoy"
+            ),
+            create_text(
+                SCREEN_X - (BORDER_SIZE * 2),
+                SCREEN_Y - BORDER_SIZE - 28 - 12,
+                8,
+                "This PDF only works in Chromium based browsers",
+            ),
+            # Bottom text
+            create_text(
+                2,
+                2,
+                8,
+                "Upload ROM (.gb) file at: https://gameboy.doompdf.dev/",
+            ),
+            create_text(
+                2,
+                12,
+                8,
+                "Source Code: https://github.com/simplyrohan/pdfboy",
+            ),
+        ]
+    )
 
     page.Annots = PdfArray(fields)
     writer.addpage(page)

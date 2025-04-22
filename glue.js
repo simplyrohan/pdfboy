@@ -3,13 +3,19 @@ var Module = {};
 var lines = [];
 
 function log(msg) {
-	lines.push(msg);
-	if (lines.length > 25)
-		lines.shift();
+	// lines.push(msg);
+	// if (lines.length > 25)
+	// 	lines.shift();
 
-	for (var i = 0; i < lines.length; i++) {
-		var row = lines[i];
-		// globalThis.getField("console_" + (25 - i - 1)).value = row;
+	// for (var i = 0; i < lines.length; i++) {
+	// 	var row = lines[i];
+	// 	globalThis.getField("console_" + (25 - i - 1)).value = row;
+	// }
+
+	if (msg.startsWith("ms:")) {
+		let fps = 1000 / parseInt(msg.substring(3))
+		globalThis.getField("fps").value = fps.toFixed(2) + " FPS";
+		globalThis.getField("speed").value = ((fps / 60) * 100).toFixed(0) + "% Speed";
 	}
 }
 
